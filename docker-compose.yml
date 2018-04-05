@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  redis-go-push-client:
+    build: .
+    networks:
+      broker_test_net:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    networks:
+      broker_test_net:
+        aliases:
+          - redis
+
+  broker:
+    image: emq-docker:latest
+    volumes:
+      - ./acl.conf:/opt/emqttd/etc/acl.conf
+    ports:
+      - 1883:1883
+      - 18085:18083
+    networks:
+      broker_test_net:
+        aliases:
+          - broker
+
+networks:
+  broker_test_net:
+    external: true
